@@ -1,0 +1,47 @@
+create database store5;
+create table countries(
+    code int primary key ,
+    name varchar(20) not null unique ,
+    continent_name varchar(20) not null unique
+);
+create table users
+(
+    id int primary key,
+    full_name varchar(20) not null,
+    email varchar(20) unique,
+    gender char(1) not null check ( gender = 'm' or gender = 'f' ) ,
+    date_of_birth varchar(15) not null ,
+    created_at datetime default current_timestamp,
+    country_code int,
+    foreign key (country_code) references countries (code)
+);
+create table orders(
+    id int primary key ,
+    user_id int,
+    foreign key (user_id) references users(id) ,
+    status varchar(6) check ( status='start' or status='finish'),
+    created_at datetime default current_timestamp
+);
+create table products(
+    id int primary key ,
+    name varchar(10) not null ,
+    price int default 0 ,
+    status varchar(10) check ( status='valid' or status='expired' ),
+    created_at datetime default current_timestamp
+);
+create table order_products(
+  order_id int,
+  foreign key (order_id) references orders(id) ,
+  product_id int,
+  foreign key (product_id) references products(id) ,
+    quantity int default 0
+);
+insert into countries values (966,'Saudi Arabia','Riyadh');
+insert into countries values (963,'Syria','Damascus');
+insert into users (id, full_name, email, gender, date_of_birth, country_code) values (1,'Areej Aldossari','areej@gmail.com','f','2001/14/12',966);
+insert into orders (id, user_id, status) values (1,1,'start');
+insert into products (id, name,price, status) values (1,'phone',5000,'valid');
+insert into products (id, name,price, status) values (2,'Laptop',5000,'valid');
+insert into order_products values (1,1,15);
+update countries set code=961,name='Lebanon',continent_name='Beirut' where code=963;
+delete from products where id=2;
